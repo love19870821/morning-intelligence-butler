@@ -1,42 +1,73 @@
 # Morning Intelligence Butler
 
-A small open-source morning briefing assistant that combines:
-- daily news briefings
-- Gmail important-mail summaries
-- safe inbox cleanup suggestions
-- simple automation-friendly output
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+
+Morning Intelligence Butler is a small open-source morning briefing assistant.
+It combines daily news, important mail summaries, and safe inbox cleanup into one concise report.
+
+## Why it exists
+
+Most morning tools are either too noisy or too weak.
+This project is designed to be:
+
+- practical
+- conservative by default
+- easy to automate
+- pleasant to read
+- safe with mail cleanup
 
 ## What it does
 
-Every morning, it can help you:
-- summarize important mail
-- surface items that need attention today
-- identify low-value mail that can be moved to trash safely
-- produce a concise report you can read in under a minute
+Each morning it can help you:
 
-## Design goals
+- see today’s important mail first
+- summarize what needs attention
+- list safe cleanup actions
+- produce a short report you can scan quickly
 
-- conservative by default
-- never hard-deletes mail
-- easy to reuse for Telegram, CLI, or scheduled jobs
-- built to feel like a real personal morning secretary
+## Example output
 
-## Why this exists
+```text
+Morning Intelligence Butler
+=
 
-Most inbox tools either do too little or too much. This project is meant to be:
-- practical
-- low-friction
-- safe
-- easy to adapt
+Important mail
+- Reply to client about proposal
 
-## Planned features
+News highlights
+- Taiwan headline example
+- AI news example
 
-- Morning news digest
-- Important Gmail summary
-- Safe cleanup mode for promotions and newsletters
-- Daily scheduled report
-- Optional Telegram delivery
+Cleanup actions
+- Moved 24 promotional emails to trash
+- Skipped 3 starred messages and 2 emails with attachments
+```
 
-## License
+## Quick start
 
-MIT
+```bash
+python src/main.py
+python src/main.py --input sample_report.json
+```
+
+## Design principles
+
+- Never hard-delete mail
+- Skip starred mail by default
+- Skip mail with attachments by default
+- Favor explicit summaries over long dumps
+- Make the morning report readable in under a minute
+
+## Planned roadmap
+
+- News source connectors
+- Gmail summary integration
+- Telegram delivery
+- Scheduled execution
+- Configurable cleanup rules
+
+## Project status
+
+This is an early public foundation release.
+It is intended to grow into a reusable morning briefing workflow.

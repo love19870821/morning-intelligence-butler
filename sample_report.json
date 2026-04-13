@@ -1,0 +1,16 @@
+{
+  "news": [
+    "Taiwan headline example",
+    "AI headline example"
+  ],
+  "mail": {
+    "important": [
+      "Reply to supplier about invoice",
+      "Check calendar invite for 10:30 meeting"
+    ],
+    "cleanup": [
+      "Moved 24 promotional emails to trash",
+      "Skipped 3 starred messages and 2 emails with attachments"
+    ]
+  }
+}
