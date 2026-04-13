@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "morning-intelligence-butler"
+version = "0.2.0"
+description = "A morning briefing assistant for news, important mail, and safe inbox cleanup"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "love19870821"}]
+keywords = ["morning", "briefing", "gmail", "news", "automation", "telegram"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+morning-butler = "src.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+py-modules = ["src.main"]

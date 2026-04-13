@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![CI](https://github.com/love19870821/morning-intelligence-butler/actions/workflows/ci.yml/badge.svg)](https://github.com/love19870821/morning-intelligence-butler/actions/workflows/ci.yml)
 
 Morning Intelligence Butler is a small open-source morning briefing assistant.
 It combines daily news, important mail summaries, and safe inbox cleanup into one concise report.
@@ -49,6 +50,13 @@ Cleanup actions
 ```bash
 python src/main.py
 python src/main.py --input sample_report.json
+```
+
+Or install it locally:
+
+```bash
+pip install -e .
+morning-butler --input sample_report.json
 ```
 
 ## Design principles
