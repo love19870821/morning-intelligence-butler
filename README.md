@@ -25,12 +25,14 @@ Each morning it can help you:
 - see today’s important mail first
 - summarize what needs attention
 - list safe cleanup actions
+- identify follow-up items before the day starts
 - produce a short report you can scan quickly
 
 ## Example output
 
 ```text
 Morning Intelligence Butler
+Generated: 2026-04-14T08:00:00+08:00
 =
 
 Important mail
@@ -43,6 +45,10 @@ News highlights
 Cleanup actions
 - Moved 24 promotional emails to trash
 - Skipped 3 starred messages and 2 emails with attachments
+
+Follow-ups
+- Reply to the supplier before 11:00
+- Check the 10:30 calendar invite
 ```
 
 ## Quick start
@@ -50,6 +56,7 @@ Cleanup actions
 ```bash
 python src/main.py
 python src/main.py --input sample_report.json
+python src/main.py --json
 ```
 
 Or install it locally:
@@ -66,6 +73,7 @@ morning-butler --input sample_report.json
 - Skip mail with attachments by default
 - Favor explicit summaries over long dumps
 - Make the morning report readable in under a minute
+- Surface follow-ups, not just summaries
 
 ## Planned roadmap
 
@@ -74,6 +82,7 @@ morning-butler --input sample_report.json
 - Telegram delivery
 - Scheduled execution
 - Configurable cleanup rules
+- Markdown / HTML output variants
 
 ## Project status
 

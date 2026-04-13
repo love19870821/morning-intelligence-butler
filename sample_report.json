@@ -1,7 +1,14 @@
 {
+  "meta": {
+    "generated_at": "2026-04-14T08:00:00+08:00"
+  },
   "news": [
-    "Taiwan headline example",
-    "AI headline example"
+    "Taiwan market opens higher",
+    "AI tooling continues to accelerate"
+  ],
+  "follow_ups": [
+    "Reply to the supplier before 11:00",
+    "Check the 10:30 calendar invite"
   ],
   "mail": {
     "important": [
