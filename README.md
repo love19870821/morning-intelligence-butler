@@ -2,10 +2,31 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![CI](https://github.com/love19870821/morning-intelligence-butler/actions/workflows/ci.yml/badge.svg)](https://github.com/love19870821/morning-intelligence-butler/actions/workflows/ci.yml)
 
 Morning Intelligence Butler is a small open-source morning briefing assistant.
 It combines daily news, important mail summaries, and safe inbox cleanup into one concise report.
+
+## Start here
+
+Shortest path from clone to a real report:
+
+1. Install locally.
+2. Verify the install.
+3. Generate a demo bundle.
+4. Run the tool on your own input.
+
+```bash
+pip install -e .
+morning-butler-smoke
+morning-butler --generate-demo demo-kit
+morning-butler --input demo-kit/sample_report.json --output morning-report.txt
+```
+
+If you prefer the module form:
+
+```bash
+python -m morning_butler --input demo-kit/sample_report.json
+```
 
 ## Why it exists
 
@@ -84,59 +105,51 @@ HTML mode:
 </html>
 ```
 
-Write output to a file:
+## Verify the install
 
-```bash
-python src/main.py --markdown --input sample_report.json --output report.md
-python src/main.py --html --input sample_report.json --output report.html
-python src/main.py --json --input sample_report.json --output report.json
-```
-
-Read input from stdin:
-
-```bash
-cat sample_report.json | python src/main.py --json --input -
-```
-
-Create a starter sample file:
-
-```bash
-python src/main.py --write-sample
-python src/main.py --write-sample my_sample.json
-```
-
-Generate a full demo bundle:
-
-```bash
-python src/main.py --generate-demo
-python src/main.py --generate-demo demo-kit
-```
-
-## Quick start
-
-```bash
-python src/main.py
-python -m morning_butler --version
-python -m morning_butler --input sample_report.json
-python src/main.py --format json
-python src/main.py --format markdown
-python src/main.py --format html
-```
-
-## First-run smoke test
-
-After installing, verify the full flow:
-
-```bash
-python scripts/smoke_test.py
-```
-
-Or install it locally:
+Run the smoke test after installing:
 
 ```bash
 pip install -e .
-morning-butler --input sample_report.json
 morning-butler-smoke
+python scripts/smoke_test.py
+```
+
+## Demo bundle
+
+Create a full sample bundle:
+
+```bash
+morning-butler --generate-demo
+morning-butler --generate-demo demo-kit
+```
+
+The bundle includes sample input plus rendered text, Markdown, HTML, and JSON outputs.
+
+## Real use
+
+Feed the tool your own report JSON:
+
+```bash
+morning-butler --input your_report.json
+morning-butler --format json --input your_report.json --output report.json
+morning-butler --format markdown --input your_report.json --output report.md
+morning-butler --format html --input your_report.json --output report.html
+```
+
+For pipelines, stdin also works:
+
+```bash
+cat your_report.json | morning-butler --input - --format text
+```
+
+## Sample bootstrap
+
+Create a starter sample file when you need one:
+
+```bash
+morning-butler --write-sample
+morning-butler --write-sample my_sample.json
 ```
 
 ## Design principles
