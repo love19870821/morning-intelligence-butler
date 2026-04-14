@@ -89,6 +89,12 @@ python src/main.py --html --input sample_report.json --output report.html
 python src/main.py --json --input sample_report.json --output report.json
 ```
 
+Read input from stdin:
+
+```bash
+cat sample_report.json | python src/main.py --json --input -
+```
+
 ## Quick start
 
 ```bash

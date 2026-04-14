@@ -46,6 +46,8 @@ class MorningReport:
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    if str(path) == "-":
+        return json.loads(sys.stdin.read())
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -128,9 +130,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Morning Intelligence Butler")
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--output", type=Path, help="Write the rendered report to a file")
-    parser.add_argument("--json", action="store_true", help="Output JSON instead of text")
-    parser.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
-    parser.add_argument("--html", action="store_true", help="Output HTML instead of text")
+    format_group = parser.add_mutually_exclusive_group()
+    format_group.add_argument("--json", action="store_true", help="Output JSON instead of text")
+    format_group.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
+    format_group.add_argument("--html", action="store_true", help="Output HTML instead of text")
     return parser.parse_args()
 
 
