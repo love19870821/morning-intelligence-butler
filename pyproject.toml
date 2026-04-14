@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "morning-intelligence-butler"
 dynamic = ["version"]
-description = "A morning briefing assistant for news, important mail, and safe inbox cleanup"
+description = "A Traditional Chinese morning briefing assistant for news, AI updates, Gmail triage, live market prices, and GitHub progress"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{name = "love19870821"}]
 license-files = ["LICENSE"]
-keywords = ["morning", "briefing", "gmail", "news", "automation", "telegram"]
+keywords = ["morning", "briefing", "gmail", "news", "automation", "telegram", "ai", "market", "github", "traditional-chinese"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: End Users/Desktop",
