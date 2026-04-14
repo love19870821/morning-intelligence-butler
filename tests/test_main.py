@@ -1,4 +1,9 @@
 from argparse import Namespace
+import io
+import json
+from pathlib import Path
+
+import pytest
 
 from src.main import (
     MorningReport,
@@ -6,7 +11,9 @@ from src.main import (
     build_markdown_report,
     build_report,
     example_payload,
+    load_input_data,
     select_format,
+    write_output,
 )
 
 
@@ -36,12 +43,29 @@ def test_json_mode_returns_normalized_payload():
     assert payload["follow_ups"]
 
 
+def test_load_input_data_reports_missing_file(tmp_path):
+    missing = tmp_path / "nope.json"
+    with pytest.raises(ValueError, match="Input file not found"):
+        load_input_data(missing)
+
+
+def test_load_input_data_reports_invalid_json(tmp_path):
+    bad = tmp_path / "bad.json"
+    bad.write_text("not json", encoding="utf-8")
+    with pytest.raises(ValueError, match="Invalid JSON"):
+        load_input_data(bad)
+
+
+def test_write_output_creates_parent_directories(tmp_path):
+    target = tmp_path / "nested" / "report.md"
+    write_output(target, "hello")
+    assert target.read_text(encoding="utf-8") == "hello"
+
+
 def test_stdin_input_can_be_used_via_hyphen(tmp_path, monkeypatch):
     sample = example_payload()
-    monkeypatch.setattr("sys.stdin", __import__("io").StringIO(__import__("json").dumps(sample)))
-    from src.main import load_json
-
-    data = load_json(__import__("pathlib").Path("-"))
+    monkeypatch.setattr("sys.stdin", io.StringIO(json.dumps(sample)))
+    data = load_input_data(Path("-"))
     assert data["mail"]["important"]
 
 

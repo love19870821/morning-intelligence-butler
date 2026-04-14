@@ -51,6 +51,22 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_input_data(input_path: Path | None) -> dict[str, Any]:
+    if input_path is None:
+        return example_payload()
+    try:
+        return load_json(input_path)
+    except FileNotFoundError as exc:
+        raise ValueError(f"Input file not found: {input_path}") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in input file {input_path}: {exc.msg}") from exc
+
+
+def write_output(path: Path, output: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(output, encoding="utf-8")
+
+
 def format_section(title: str, items: list[str]) -> list[str]:
     lines = [title]
     if items:
@@ -159,13 +175,18 @@ def render_report(report: MorningReport, output_format: str) -> str:
 
 def main() -> None:
     args = parse_args()
-    data = load_json(args.input) if args.input else example_payload()
+    try:
+        data = load_input_data(args.input)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(2)
+
     report = MorningReport.from_dict(data)
     output_format = select_format(args)
     output = render_report(report, output_format)
 
     if args.output:
-        args.output.write_text(output, encoding="utf-8")
+        write_output(args.output, output)
     else:
         print(output)
 
