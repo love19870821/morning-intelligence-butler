@@ -39,6 +39,16 @@ Fix:
 - then run `morning-butler-release-check`
 - confirm that the fresh virtual environment can install the wheel and pass the smoke test
 
+## `Error: Unable to fetch ...`
+
+The live market price fetch failed.
+
+Fix:
+
+- check that the machine has outbound network access
+- retry after a short delay
+- confirm that the upstream price sites are reachable
+
 ## Output file is missing
 
 The CLI only writes a file when `--output` is set.

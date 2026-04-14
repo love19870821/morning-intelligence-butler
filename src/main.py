@@ -8,13 +8,22 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
+import re
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
 from src import __version__
+
+
+MARKET_FIXTURE_ENV = "MORNING_BUTLER_MARKET_FIXTURE"
+PRICE_PATTERN = re.compile(r'data-test="instrument-price-last">([^<]+)<')
 
 
 @dataclass
@@ -27,18 +36,13 @@ class MorningReport:
     generated_at: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MorningReport":
+    def from_dict(cls, data: dict[str, Any], market_snapshot: list[str] | None = None) -> "MorningReport":
         mail = data.get("mail", {}) or {}
         meta = data.get("meta", {}) or {}
-        market = data.get("market", {}) or {}
         return cls(
             important_mail=list(mail.get("important", []) or []),
             news_highlights=list(data.get("news", []) or []),
-            market_snapshot=[
-                f"Gold (international): {require_market_value(market, 'gold', 'international gold price')}",
-                f"Oil: {require_market_value(market, 'oil', 'oil price')}",
-                f"USD/TWD: {require_market_value(market, 'usd_twd', 'USD/TWD exchange rate')}",
-            ],
+            market_snapshot=list(market_snapshot or fetch_market_snapshot()),
             cleanup_actions=list(mail.get("cleanup", []) or []),
             follow_ups=list(data.get("follow_ups", []) or []),
             generated_at=meta.get("generated_at"),
@@ -82,16 +86,90 @@ def load_input_data(input_path: Path | None) -> dict[str, Any]:
         raise ValueError(f"Invalid JSON in input file {input_path}: {exc.msg}") from exc
 
 
-def require_market_value(market: dict[str, Any], key: str, label: str) -> str:
-    value = market.get(key)
-    if value is None or str(value).strip() == "":
-        raise ValueError(f"Missing required market field: market.{key} ({label})")
-    return str(value)
-
-
 def write_output(path: Path, output: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(output, encoding="utf-8")
+
+
+def load_market_fixture() -> dict[str, str] | None:
+    raw = os.environ.get(MARKET_FIXTURE_ENV)
+    if raw is None or raw.strip() == "":
+        return None
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in {MARKET_FIXTURE_ENV}: {exc.msg}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"{MARKET_FIXTURE_ENV} must contain a JSON object")
+    fixture: dict[str, str] = {}
+    for key in ("gold", "oil", "usd_twd"):
+        value = payload.get(key)
+        if value is None or str(value).strip() == "":
+            raise ValueError(f"{MARKET_FIXTURE_ENV} is missing {key}")
+        fixture[key] = str(value)
+    return fixture
+
+
+def fetch_url(url: str) -> str:
+    request = Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "text/html,application/json;q=0.9,*/*;q=0.8"})
+    with urlopen(request, timeout=20) as response:
+        return response.read().decode("utf-8", errors="replace")
+
+
+def parse_investing_price(html_text: str) -> str:
+    match = PRICE_PATTERN.search(html_text)
+    if not match:
+        raise ValueError("Unable to parse Investing.com price")
+    return match.group(1).strip()
+
+
+def format_price(value: Any, decimals: int) -> str:
+    number = Decimal(str(value).replace(",", "").strip())
+    return format(number, f",.{decimals}f")
+
+
+def fetch_yahoo_price(symbol: str) -> str:
+    url = f"https://query2.finance.yahoo.com/v8/finance/chart/{quote(symbol, safe='')}?range=1d&interval=1m&includePrePost=false&events=div,splits"
+    response = json.loads(fetch_url(url))
+    chart = response["chart"]["result"][0]
+    meta = chart["meta"]
+    price = meta.get("regularMarketPrice")
+    if price is None:
+        closes = chart.get("indicators", {}).get("quote", [{}])[0].get("close", [])
+        price = next((value for value in reversed(closes) if value is not None), None)
+    if price is None:
+        raise ValueError(f"Unable to find Yahoo Finance price for {symbol}")
+    return str(price)
+
+
+def fetch_market_value(label: str, investing_url: str, yahoo_symbol: str, decimals: int, prefix: str = "", suffix: str = "") -> str:
+    sources = (
+        lambda: parse_investing_price(fetch_url(investing_url)),
+        lambda: fetch_yahoo_price(yahoo_symbol),
+    )
+    last_error: Exception | None = None
+    for source in sources:
+        try:
+            raw = source()
+            return f"{prefix}{format_price(raw, decimals)}{suffix}"
+        except Exception as exc:  # pragma: no cover - fallback path depends on live network
+            last_error = exc
+    raise ValueError(f"Unable to fetch {label}: {last_error}")
+
+
+def fetch_market_snapshot() -> list[str]:
+    fixture = load_market_fixture()
+    if fixture is not None:
+        return [
+            f"Gold (international): {fixture['gold']}",
+            f"Oil (Brent): {fixture['oil']}",
+            f"USD/TWD: {fixture['usd_twd']}",
+        ]
+    return [
+        f"Gold (international): {fetch_market_value('international gold price', 'https://www.investing.com/commodities/gold', 'GC=F', 2, prefix='USD ', suffix='/oz')}",
+        f"Oil (Brent): {fetch_market_value('Brent oil price', 'https://www.investing.com/commodities/brent-oil', 'BZ=F', 2, prefix='USD ', suffix='/bbl')}",
+        f"USD/TWD: {fetch_market_value('USD/TWD exchange rate', 'https://www.investing.com/currencies/usd-twd', 'USDTWD=X', 3)}",
+    ]
 
 
 def format_section(title: str, items: list[str]) -> list[str]:
@@ -194,11 +272,6 @@ def example_payload() -> dict[str, Any]:
     return {
         "meta": {"generated_at": "2026-04-14T08:00:00+08:00"},
         "news": ["Taiwan market opens higher", "AI tooling continues to accelerate"],
-        "market": {
-            "gold": "USD 2,350/oz",
-            "oil": "Brent USD 84.20/bbl",
-            "usd_twd": "32.12",
-        },
         "follow_ups": ["Reply to the supplier before 11:00", "Check the 10:30 calendar invite"],
         "mail": {
             "important": [

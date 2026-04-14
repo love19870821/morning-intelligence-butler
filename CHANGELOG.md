@@ -19,3 +19,4 @@ This release focuses on the first stable public workflow:
 ## [Unreleased]
 
 - Ongoing release-readiness improvements
+- Live market snapshot fetching for gold, Brent oil, and USD/TWD

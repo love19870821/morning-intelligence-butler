@@ -21,8 +21,19 @@ from src.main import (
     write_sample_input,
 )
 
+MARKET_SNAPSHOT = [
+    "Gold (international): USD 4,796.65/oz",
+    "Oil (Brent): USD 97.79/bbl",
+    "USD/TWD: 31.623",
+]
 
-def test_build_report_contains_sections():
+
+def mock_market_snapshot(monkeypatch):
+    monkeypatch.setattr("src.main.fetch_market_snapshot", lambda: MARKET_SNAPSHOT)
+
+
+def test_build_report_contains_sections(monkeypatch):
+    mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     text = build_report(report)
     assert "Important mail" in text
@@ -49,7 +60,8 @@ def test_version_is_consistent_between_source_and_installed_metadata():
         pytest.skip("package metadata is not installed in this environment")
 
 
-def test_json_mode_returns_normalized_payload():
+def test_json_mode_returns_normalized_payload(monkeypatch):
+    mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     payload = report.to_dict()
     assert payload["important_mail"]
@@ -66,7 +78,8 @@ def test_load_input_data_reports_missing_file(tmp_path):
         load_input_data(missing)
 
 
-def test_main_returns_consistent_exit_codes_for_success_and_bad_input(tmp_path, capsys):
+def test_main_returns_consistent_exit_codes_for_success_and_bad_input(tmp_path, capsys, monkeypatch):
+    mock_market_snapshot(monkeypatch)
     sample = tmp_path / "sample.json"
     demo = tmp_path / "demo"
     missing = tmp_path / "nope.json"
@@ -82,13 +95,15 @@ def test_main_returns_consistent_exit_codes_for_success_and_bad_input(tmp_path, 
     assert "Input file not found" in captured.err
 
 
-def test_main_requires_market_fields(tmp_path, capsys):
-    bad = tmp_path / "bad.json"
-    bad.write_text(json.dumps({"news": [], "mail": {}}), encoding="utf-8")
+def test_main_fetches_live_market_snapshot_without_input_market(tmp_path, capsys, monkeypatch):
+    mock_market_snapshot(monkeypatch)
+    input_file = tmp_path / "input.json"
+    input_file.write_text(json.dumps({"news": [], "mail": {}}), encoding="utf-8")
 
-    assert main(["--input", str(bad)]) == 2
+    assert main(["--input", str(input_file)]) == 0
     captured = capsys.readouterr()
-    assert "Missing required market field" in captured.err
+    assert "Market snapshot" in captured.out
+    assert "Gold (international): USD 4,796.65/oz" in captured.out
 
 
 def test_load_input_data_reports_invalid_json(tmp_path):
@@ -110,9 +125,11 @@ def test_write_sample_input_creates_starter_json(tmp_path):
     data = json.loads(target.read_text(encoding="utf-8"))
     assert data["mail"]["important"]
     assert data["follow_ups"]
+    assert "market" not in data
 
 
-def test_generate_demo_bundle_creates_all_demo_files(tmp_path):
+def test_generate_demo_bundle_creates_all_demo_files(tmp_path, monkeypatch):
+    mock_market_snapshot(monkeypatch)
     target = tmp_path / "demo"
     generate_demo_bundle(target)
     assert (target / "sample_report.json").exists()
@@ -129,7 +146,8 @@ def test_stdin_input_can_be_used_via_hyphen(tmp_path, monkeypatch):
     assert data["mail"]["important"]
 
 
-def test_markdown_mode_uses_headings():
+def test_markdown_mode_uses_headings(monkeypatch):
+    mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     text = build_markdown_report(report)
     assert text.startswith("# Morning Intelligence Butler")
@@ -139,7 +157,8 @@ def test_markdown_mode_uses_headings():
     assert "**Summary:**" in text
 
 
-def test_html_mode_uses_document_shell():
+def test_html_mode_uses_document_shell(monkeypatch):
+    mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     text = build_html_report(report)
     assert text.startswith("<!doctype html>")

@@ -11,6 +11,7 @@ This verifies the most important first-run flows:
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -18,11 +19,14 @@ import tempfile
 from pathlib import Path
 
 
-def run(cmd: list[str], *, cwd: Path, input_text: str | None = None) -> subprocess.CompletedProcess[str]:
+def run(
+    cmd: list[str], *, cwd: Path, input_text: str | None = None, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         cmd,
         cwd=cwd,
         input=input_text,
+        env=env,
         text=True,
         capture_output=True,
         check=True,
@@ -43,6 +47,15 @@ def main() -> int:
     else:
         cli_cmd = [cli]
 
+    env = os.environ.copy()
+    env["MORNING_BUTLER_MARKET_FIXTURE"] = json.dumps(
+        {
+            "gold": "USD 4,796.65/oz",
+            "oil": "USD 97.79/bbl",
+            "usd_twd": "31.623",
+        }
+    )
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
         sample = tmp / "sample.json"
@@ -52,15 +65,15 @@ def main() -> int:
         json_out = tmp / "report.json"
         demo_dir = tmp / "demo"
 
-        run(cli_cmd + ["--write-sample", str(sample)], cwd=repo_root)
+        run(cli_cmd + ["--write-sample", str(sample)], cwd=repo_root, env=env)
         sample_data = json.loads(sample.read_text(encoding="utf-8"))
         if not sample_data.get("mail", {}).get("important"):
             raise AssertionError("sample JSON missing important mail")
 
-        run(cli_cmd + ["--format", "text", "--input", str(sample), "--output", str(text_out)], cwd=repo_root)
-        run(cli_cmd + ["--format", "markdown", "--input", str(sample), "--output", str(md_out)], cwd=repo_root)
-        run(cli_cmd + ["--format", "html", "--input", str(sample), "--output", str(html_out)], cwd=repo_root)
-        run(cli_cmd + ["--format", "json", "--input", str(sample), "--output", str(json_out)], cwd=repo_root)
+        run(cli_cmd + ["--format", "text", "--input", str(sample), "--output", str(text_out)], cwd=repo_root, env=env)
+        run(cli_cmd + ["--format", "markdown", "--input", str(sample), "--output", str(md_out)], cwd=repo_root, env=env)
+        run(cli_cmd + ["--format", "html", "--input", str(sample), "--output", str(html_out)], cwd=repo_root, env=env)
+        run(cli_cmd + ["--format", "json", "--input", str(sample), "--output", str(json_out)], cwd=repo_root, env=env)
 
         assert_file(text_out, "Morning Intelligence Butler")
         assert_file(md_out, "# Morning Intelligence Butler")
@@ -68,12 +81,12 @@ def main() -> int:
         json.loads(json_out.read_text(encoding="utf-8"))
 
         stdin_payload = sample.read_text(encoding="utf-8")
-        result = run(cli_cmd + ["--format", "json", "--input", "-"], cwd=repo_root, input_text=stdin_payload)
+        result = run(cli_cmd + ["--format", "json", "--input", "-"], cwd=repo_root, input_text=stdin_payload, env=env)
         stdin_data = json.loads(result.stdout)
         if "important_mail" not in stdin_data:
             raise AssertionError("stdin JSON missing important_mail")
 
-        run(cli_cmd + ["--generate-demo", str(demo_dir)], cwd=repo_root)
+        run(cli_cmd + ["--generate-demo", str(demo_dir)], cwd=repo_root, env=env)
         expected = {
             "sample_report.json",
             "report.txt",

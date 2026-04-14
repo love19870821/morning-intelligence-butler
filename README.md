@@ -69,9 +69,9 @@ News highlights
 - AI news example
 
 Market snapshot
-- Gold (international): USD 2,350/oz
-- Oil: Brent USD 84.20/bbl
-- USD/TWD: 32.12
+- Gold (international): live price
+- Oil (Brent): live price
+- USD/TWD: live rate
 
 Cleanup actions
 - Moved 24 promotional emails to trash
@@ -151,9 +151,8 @@ The bundle includes sample input plus rendered text, Markdown, HTML, and JSON ou
 
 ## Real use
 
-Feed the tool your own report JSON:
-
-The input must include `market.gold`, `market.oil`, and `market.usd_twd` with real values.
+Feed the tool your own report JSON.
+The report now fetches live gold, Brent oil, and USD/TWD prices automatically.
 
 ```bash
 morning-butler --input your_report.json
