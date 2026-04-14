@@ -146,6 +146,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Morning Intelligence Butler")
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--output", type=Path, help="Write the rendered report to a file")
+    parser.add_argument(
+        "--format",
+        choices=("text", "json", "markdown", "html"),
+        help="Explicitly choose the output format",
+    )
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument("--json", action="store_true", help="Output JSON instead of text")
     format_group.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
@@ -154,6 +159,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def select_format(args: argparse.Namespace) -> str:
+    if args.format:
+        return args.format
     if args.json:
         return "json"
     if args.markdown:

@@ -100,9 +100,9 @@ cat sample_report.json | python src/main.py --json --input -
 ```bash
 python src/main.py
 python src/main.py --input sample_report.json
-python src/main.py --json
-python src/main.py --markdown
-python src/main.py --html
+python src/main.py --format json
+python src/main.py --format markdown
+python src/main.py --format html
 ```
 
 Or install it locally:

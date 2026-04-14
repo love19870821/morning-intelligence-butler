@@ -28,10 +28,10 @@ def test_build_report_contains_sections():
 
 
 def test_select_format_prefers_one_mode():
-    assert select_format(Namespace(json=True, markdown=False, html=False)) == "json"
-    assert select_format(Namespace(json=False, markdown=True, html=False)) == "markdown"
-    assert select_format(Namespace(json=False, markdown=False, html=True)) == "html"
-    assert select_format(Namespace(json=False, markdown=False, html=False)) == "text"
+    assert select_format(Namespace(format="json", json=True, markdown=False, html=False)) == "json"
+    assert select_format(Namespace(format="markdown", json=False, markdown=True, html=False)) == "markdown"
+    assert select_format(Namespace(format="html", json=False, markdown=False, html=True)) == "html"
+    assert select_format(Namespace(format=None, json=False, markdown=False, html=False)) == "text"
 
 
 def test_json_mode_returns_normalized_payload():
