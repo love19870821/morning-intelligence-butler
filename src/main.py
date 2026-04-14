@@ -134,12 +134,22 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def render_report(report: MorningReport, args: argparse.Namespace) -> str:
+def select_format(args: argparse.Namespace) -> str:
     if args.json:
-        return json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
+        return "json"
     if args.markdown:
-        return build_markdown_report(report)
+        return "markdown"
     if args.html:
+        return "html"
+    return "text"
+
+
+def render_report(report: MorningReport, output_format: str) -> str:
+    if output_format == "json":
+        return json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
+    if output_format == "markdown":
+        return build_markdown_report(report)
+    if output_format == "html":
         return build_html_report(report)
     return build_report(report)
 
@@ -148,7 +158,8 @@ def main() -> None:
     args = parse_args()
     data = load_json(args.input) if args.input else example_payload()
     report = MorningReport.from_dict(data)
-    output = render_report(report, args)
+    output_format = select_format(args)
+    output = render_report(report, output_format)
 
     if args.output:
         args.output.write_text(output, encoding="utf-8")
