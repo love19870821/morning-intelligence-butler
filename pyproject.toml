@@ -23,6 +23,7 @@ classifiers = [
 
 [project.scripts]
 morning-butler = "src.main:main"
+morning-butler-smoke = "scripts.smoke_test:main"
 
 [project.urls]
 Homepage = "https://github.com/love19870821/morning-intelligence-butler"
@@ -31,4 +32,5 @@ Issues = "https://github.com/love19870821/morning-intelligence-butler/issues"
 
 [tool.setuptools]
 package-dir = {"" = "."}
+packages = ["scripts"]
 py-modules = ["src.main", "morning_butler"]

@@ -136,6 +136,7 @@ Or install it locally:
 ```bash
 pip install -e .
 morning-butler --input sample_report.json
+morning-butler-smoke
 ```
 
 ## Design principles

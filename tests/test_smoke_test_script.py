@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from scripts.smoke_test import main as smoke_main
 
 
