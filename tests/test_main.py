@@ -1,10 +1,12 @@
 from argparse import Namespace
+from importlib.metadata import PackageNotFoundError, version as package_version
 import io
 import json
 from pathlib import Path
 
 import pytest
 
+from src import __version__
 from src.main import (
     MorningReport,
     build_html_report,
@@ -35,6 +37,14 @@ def test_select_format_prefers_one_mode():
     assert select_format(Namespace(format="markdown", json=False, markdown=True, html=False)) == "markdown"
     assert select_format(Namespace(format="html", json=False, markdown=False, html=True)) == "html"
     assert select_format(Namespace(format=None, json=False, markdown=False, html=False)) == "text"
+
+
+def test_version_is_consistent_between_source_and_installed_metadata():
+    assert __version__ == "0.2.0"
+    try:
+        assert package_version("morning-intelligence-butler") == __version__
+    except PackageNotFoundError:
+        pytest.skip("package metadata is not installed in this environment")
 
 
 def test_json_mode_returns_normalized_payload():

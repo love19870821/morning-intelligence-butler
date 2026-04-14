@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "morning-intelligence-butler"
-version = "0.2.0"
+dynamic = ["version"]
 description = "A morning briefing assistant for news, important mail, and safe inbox cleanup"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,3 +34,6 @@ Issues = "https://github.com/love19870821/morning-intelligence-butler/issues"
 package-dir = {"" = "."}
 packages = ["scripts"]
 py-modules = ["src.main", "morning_butler"]
+
+[tool.setuptools.dynamic]
+version = {attr = "src.__version__"}
