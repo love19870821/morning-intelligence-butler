@@ -185,7 +185,7 @@ def example_payload() -> dict[str, Any]:
     }
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Morning Intelligence Butler")
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--output", type=Path, help="Write the rendered report to a file")
@@ -213,7 +213,7 @@ def parse_args() -> argparse.Namespace:
     format_group.add_argument("--json", action="store_true", help="Output JSON instead of text")
     format_group.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
     format_group.add_argument("--html", action="store_true", help="Output HTML instead of text")
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def select_format(args: argparse.Namespace) -> str:
@@ -252,35 +252,37 @@ def generate_demo_bundle(directory: Path) -> None:
     write_output(directory / "report.json", render_report(report, "json"))
 
 
-def main() -> None:
-    args = parse_args()
-
-    if args.generate_demo:
-        generate_demo_bundle(args.generate_demo)
-        return
-
-    if args.write_sample:
-        write_sample_input(args.write_sample)
-        return
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
 
     try:
+        if args.generate_demo:
+            generate_demo_bundle(args.generate_demo)
+            return 0
+
+        if args.write_sample:
+            write_sample_input(args.write_sample)
+            return 0
+
         data = load_input_data(args.input)
+        report = MorningReport.from_dict(data)
+        output_format = select_format(args)
+        output = render_report(report, output_format)
+
+        if args.output:
+            write_output(args.output, output)
+        else:
+            print(output)
+        return 0
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
-        sys.exit(2)
-
-    report = MorningReport.from_dict(data)
-    output_format = select_format(args)
-    output = render_report(report, output_format)
-
-    if args.output:
-        write_output(args.output, output)
-    else:
-        print(output)
+        return 2
+    except OSError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    except BrokenPipeError:
+        return 0
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except BrokenPipeError:
-        sys.exit(0)
+    raise SystemExit(main())

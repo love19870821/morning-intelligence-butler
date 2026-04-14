@@ -15,6 +15,7 @@ from src.main import (
     example_payload,
     generate_demo_bundle,
     load_input_data,
+    main,
     select_format,
     write_output,
     write_sample_input,
@@ -61,6 +62,22 @@ def test_load_input_data_reports_missing_file(tmp_path):
     missing = tmp_path / "nope.json"
     with pytest.raises(ValueError, match="Input file not found"):
         load_input_data(missing)
+
+
+def test_main_returns_consistent_exit_codes_for_success_and_bad_input(tmp_path, capsys):
+    sample = tmp_path / "sample.json"
+    demo = tmp_path / "demo"
+    missing = tmp_path / "nope.json"
+
+    assert main(["--write-sample", str(sample)]) == 0
+    assert sample.exists()
+
+    assert main(["--generate-demo", str(demo)]) == 0
+    assert (demo / "report.txt").exists()
+
+    assert main(["--input", str(missing)]) == 2
+    captured = capsys.readouterr()
+    assert "Input file not found" in captured.err
 
 
 def test_load_input_data_reports_invalid_json(tmp_path):
