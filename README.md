@@ -164,6 +164,8 @@ morning-butler --write-sample
 morning-butler --write-sample my_sample.json
 ```
 
+See [INPUT_SCHEMA.md](INPUT_SCHEMA.md) for the expected input shape and field meanings.
+
 ## Design principles
 
 - Never hard-delete mail
