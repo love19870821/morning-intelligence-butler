@@ -27,6 +27,7 @@ def test_build_report_contains_sections():
     assert "Cleanup actions" in text
     assert "Follow-ups" in text
     assert "Generated:" in text
+    assert "Summary:" in text
 
 
 def test_select_format_prefers_one_mode():
@@ -43,6 +44,7 @@ def test_json_mode_returns_normalized_payload():
     assert payload["news_highlights"]
     assert payload["cleanup_actions"]
     assert payload["follow_ups"]
+    assert payload["summary"]["important_mail"] == len(payload["important_mail"])
 
 
 def test_load_input_data_reports_missing_file(tmp_path):
@@ -95,6 +97,7 @@ def test_markdown_mode_uses_headings():
     assert text.startswith("# Morning Intelligence Butler")
     assert "## Important mail" in text
     assert "## Follow-ups" in text
+    assert "**Summary:**" in text
 
 
 def test_html_mode_uses_document_shell():
@@ -104,6 +107,7 @@ def test_html_mode_uses_document_shell():
     assert "Morning Intelligence Butler" in text
     assert "<section><h2>Follow-ups</h2>" in text
     assert "\n+<html" not in text
+    assert 'class="summary"' in text
 
 
 def test_build_report_handles_empty_sections():

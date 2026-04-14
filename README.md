@@ -37,6 +37,7 @@ Text mode:
 ```text
 Morning Intelligence Butler
 Generated: 2026-04-14T08:00:00+08:00
+Summary: 2 important mail, 2 news items, 2 cleanup actions, 2 follow-ups
 =
 
 Important mail
@@ -60,6 +61,7 @@ Markdown mode:
 ```md
 # Morning Intelligence Butler
 Generated: 2026-04-14T08:00:00+08:00
+**Summary:** 2 important mail, 2 news items, 2 cleanup actions, 2 follow-ups
 
 ## Important mail
 - Reply to client about proposal
@@ -77,6 +79,7 @@ HTML mode:
   <head>...</head>
   <body>
     <h1>Morning Intelligence Butler</h1>
+    <p class="summary">2 important mail · 2 news items · 2 cleanup actions · 2 follow-ups</p>
   </body>
 </html>
 ```

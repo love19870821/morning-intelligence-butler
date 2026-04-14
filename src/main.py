@@ -35,9 +35,18 @@ class MorningReport:
             generated_at=meta.get("generated_at"),
         )
 
+    def counts(self) -> dict[str, int]:
+        return {
+            "important_mail": len(self.important_mail),
+            "news_highlights": len(self.news_highlights),
+            "cleanup_actions": len(self.cleanup_actions),
+            "follow_ups": len(self.follow_ups),
+        }
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "generated_at": self.generated_at,
+            "summary": self.counts(),
             "important_mail": self.important_mail,
             "news_highlights": self.news_highlights,
             "cleanup_actions": self.cleanup_actions,
@@ -91,9 +100,41 @@ def format_html_list(items: list[str]) -> str:
     return "".join(f"<li>{html.escape(item)}</li>" for item in items)
 
 
+def format_summary_line(report: MorningReport) -> str:
+    counts = report.counts()
+    return (
+        f"Summary: {counts['important_mail']} important mail, "
+        f"{counts['news_highlights']} news items, "
+        f"{counts['cleanup_actions']} cleanup actions, "
+        f"{counts['follow_ups']} follow-ups"
+    )
+
+
+def format_markdown_summary(report: MorningReport) -> str:
+    counts = report.counts()
+    return (
+        f"**Summary:** {counts['important_mail']} important mail, "
+        f"{counts['news_highlights']} news items, "
+        f"{counts['cleanup_actions']} cleanup actions, "
+        f"{counts['follow_ups']} follow-ups"
+    )
+
+
+def format_html_summary(report: MorningReport) -> str:
+    counts = report.counts()
+    return (
+        "<p class=\"summary\">"
+        f"{counts['important_mail']} important mail · "
+        f"{counts['news_highlights']} news items · "
+        f"{counts['cleanup_actions']} cleanup actions · "
+        f"{counts['follow_ups']} follow-ups"
+        "</p>"
+    )
+
+
 def build_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
-    lines = ["Morning Intelligence Butler", f"Generated: {generated}", "="]
+    lines = ["Morning Intelligence Butler", f"Generated: {generated}", format_summary_line(report), "="]
     lines.append("")
     lines.extend(format_section("Important mail", report.important_mail))
     lines.append("")
@@ -107,7 +148,7 @@ def build_report(report: MorningReport) -> str:
 
 def build_markdown_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
-    lines = ["# Morning Intelligence Butler", f"Generated: {generated}", ""]
+    lines = ["# Morning Intelligence Butler", f"Generated: {generated}", format_markdown_summary(report), ""]
     lines.extend(format_markdown_section("Important mail", report.important_mail))
     lines.append("")
     lines.extend(format_markdown_section("News highlights", report.news_highlights))
@@ -121,7 +162,7 @@ def build_markdown_report(report: MorningReport) -> str:
 def build_html_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
     return f"""<!doctype html>
-<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
+<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}.summary{{font-weight:600;margin-top:8px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  {format_html_summary(report)}\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
 
 
 def example_payload() -> dict[str, Any]:
