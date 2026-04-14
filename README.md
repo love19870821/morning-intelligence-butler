@@ -163,3 +163,7 @@ morning-butler-smoke
 
 This is an early public foundation release.
 It is intended to grow into a reusable morning briefing workflow.
+
+## Release notes
+
+See [CHANGELOG.md](CHANGELOG.md) for versioned release notes and verification-focused changes.
