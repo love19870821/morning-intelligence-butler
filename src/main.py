@@ -127,25 +127,33 @@ def example_payload() -> dict[str, Any]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Morning Intelligence Butler")
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
+    parser.add_argument("--output", type=Path, help="Write the rendered report to a file")
     parser.add_argument("--json", action="store_true", help="Output JSON instead of text")
     parser.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
     parser.add_argument("--html", action="store_true", help="Output HTML instead of text")
     return parser.parse_args()
 
 
+def render_report(report: MorningReport, args: argparse.Namespace) -> str:
+    if args.json:
+        return json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
+    if args.markdown:
+        return build_markdown_report(report)
+    if args.html:
+        return build_html_report(report)
+    return build_report(report)
+
+
 def main() -> None:
     args = parse_args()
     data = load_json(args.input) if args.input else example_payload()
     report = MorningReport.from_dict(data)
+    output = render_report(report, args)
 
-    if args.json:
-        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
-    elif args.markdown:
-        print(build_markdown_report(report))
-    elif args.html:
-        print(build_html_report(report))
+    if args.output:
+        args.output.write_text(output, encoding="utf-8")
     else:
-        print(build_report(report))
+        print(output)
 
 
 if __name__ == "__main__":

@@ -28,6 +28,7 @@ Each morning it can help you:
 - identify follow-up items before the day starts
 - produce a short report you can scan quickly
 - export text, JSON, Markdown, or HTML
+- save the result directly to a file
 
 ## Example output
 
@@ -80,6 +81,14 @@ HTML mode:
 </html>
 ```
 
+Write output to a file:
+
+```bash
+python src/main.py --markdown --input sample_report.json --output report.md
+python src/main.py --html --input sample_report.json --output report.html
+python src/main.py --json --input sample_report.json --output report.json
+```
+
 ## Quick start
 
 ```bash
@@ -106,6 +115,7 @@ morning-butler --input sample_report.json
 - Make the morning report readable in under a minute
 - Surface follow-ups, not just summaries
 - Support output formats that are easy to reuse elsewhere
+- Keep file output simple and predictable
 
 ## Planned roadmap
 

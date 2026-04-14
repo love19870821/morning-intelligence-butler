@@ -4,6 +4,7 @@ from src.main import (
     build_markdown_report,
     build_report,
     example_payload,
+    main,
 )
 
 
@@ -40,6 +41,7 @@ def test_html_mode_uses_document_shell():
     assert text.startswith("<!doctype html>")
     assert "Morning Intelligence Butler" in text
     assert "<section><h2>Follow-ups</h2>" in text
+    assert "\n+<html" not in text
 
 
 def test_build_report_handles_empty_sections():
