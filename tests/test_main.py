@@ -1,4 +1,4 @@
-from src.main import MorningReport, build_report, example_payload
+from src.main import MorningReport, build_markdown_report, build_report, example_payload
 
 
 def test_build_report_contains_sections():
@@ -18,6 +18,14 @@ def test_json_mode_returns_normalized_payload():
     assert payload["news_highlights"]
     assert payload["cleanup_actions"]
     assert payload["follow_ups"]
+
+
+def test_markdown_mode_uses_headings():
+    report = MorningReport.from_dict(example_payload())
+    text = build_markdown_report(report)
+    assert text.startswith("# Morning Intelligence Butler")
+    assert "## Important mail" in text
+    assert "## Follow-ups" in text
 
 
 def test_build_report_handles_empty_sections():

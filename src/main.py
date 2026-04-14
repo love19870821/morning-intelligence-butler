@@ -57,6 +57,15 @@ def format_section(title: str, items: list[str]) -> list[str]:
     return lines
 
 
+def format_markdown_section(title: str, items: list[str]) -> list[str]:
+    lines = [f"## {title}"]
+    if items:
+        lines.extend(f"- {item}" for item in items)
+    else:
+        lines.append("- None")
+    return lines
+
+
 def build_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
     lines = ["Morning Intelligence Butler", f"Generated: {generated}", "="]
@@ -68,6 +77,19 @@ def build_report(report: MorningReport) -> str:
     lines.extend(format_section("Cleanup actions", report.cleanup_actions))
     lines.append("")
     lines.extend(format_section("Follow-ups", report.follow_ups))
+    return "\n".join(lines)
+
+
+def build_markdown_report(report: MorningReport) -> str:
+    generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
+    lines = ["# Morning Intelligence Butler", f"Generated: {generated}", ""]
+    lines.extend(format_markdown_section("Important mail", report.important_mail))
+    lines.append("")
+    lines.extend(format_markdown_section("News highlights", report.news_highlights))
+    lines.append("")
+    lines.extend(format_markdown_section("Cleanup actions", report.cleanup_actions))
+    lines.append("")
+    lines.extend(format_markdown_section("Follow-ups", report.follow_ups))
     return "\n".join(lines)
 
 
@@ -93,6 +115,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Morning Intelligence Butler")
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--json", action="store_true", help="Output JSON instead of text")
+    parser.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
     return parser.parse_args()
 
 
@@ -103,6 +126,8 @@ def main() -> None:
 
     if args.json:
         print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+    elif args.markdown:
+        print(build_markdown_report(report))
     else:
         print(build_report(report))
 

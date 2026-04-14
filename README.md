@@ -27,8 +27,11 @@ Each morning it can help you:
 - list safe cleanup actions
 - identify follow-up items before the day starts
 - produce a short report you can scan quickly
+- export text, JSON, or Markdown
 
 ## Example output
+
+Text mode:
 
 ```text
 Morning Intelligence Butler
@@ -51,12 +54,27 @@ Follow-ups
 - Check the 10:30 calendar invite
 ```
 
+Markdown mode:
+
+```md
+# Morning Intelligence Butler
+Generated: 2026-04-14T08:00:00+08:00
+
+## Important mail
+- Reply to client about proposal
+
+## News highlights
+- Taiwan headline example
+- AI news example
+```
+
 ## Quick start
 
 ```bash
 python src/main.py
 python src/main.py --input sample_report.json
 python src/main.py --json
+python src/main.py --markdown
 ```
 
 Or install it locally:
@@ -74,6 +92,7 @@ morning-butler --input sample_report.json
 - Favor explicit summaries over long dumps
 - Make the morning report readable in under a minute
 - Surface follow-ups, not just summaries
+- Support output formats that are easy to reuse elsewhere
 
 ## Planned roadmap
 
@@ -82,7 +101,7 @@ morning-butler --input sample_report.json
 - Telegram delivery
 - Scheduled execution
 - Configurable cleanup rules
-- Markdown / HTML output variants
+- Richer Markdown / HTML output variants
 
 ## Project status
 
