@@ -27,7 +27,7 @@ Each morning it can help you:
 - list safe cleanup actions
 - identify follow-up items before the day starts
 - produce a short report you can scan quickly
-- export text, JSON, or Markdown
+- export text, JSON, Markdown, or HTML
 
 ## Example output
 
@@ -68,6 +68,18 @@ Generated: 2026-04-14T08:00:00+08:00
 - AI news example
 ```
 
+HTML mode:
+
+```html
+<!doctype html>
+<html lang="zh-Hant">
+  <head>...</head>
+  <body>
+    <h1>Morning Intelligence Butler</h1>
+  </body>
+</html>
+```
+
 ## Quick start
 
 ```bash
@@ -75,6 +87,7 @@ python src/main.py
 python src/main.py --input sample_report.json
 python src/main.py --json
 python src/main.py --markdown
+python src/main.py --html
 ```
 
 Or install it locally:

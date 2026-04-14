@@ -6,6 +6,7 @@ Generate a concise morning report from news and mail inputs.
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import sys
 from dataclasses import dataclass, field
@@ -66,6 +67,12 @@ def format_markdown_section(title: str, items: list[str]) -> list[str]:
     return lines
 
 
+def format_html_list(items: list[str]) -> str:
+    if not items:
+        return "<li>None</li>"
+    return "".join(f"<li>{html.escape(item)}</li>" for item in items)
+
+
 def build_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
     lines = ["Morning Intelligence Butler", f"Generated: {generated}", "="]
@@ -93,6 +100,12 @@ def build_markdown_report(report: MorningReport) -> str:
     return "\n".join(lines)
 
 
+def build_html_report(report: MorningReport) -> str:
+    generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
+    return f"""<!doctype html>
++<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
+
+
 def example_payload() -> dict[str, Any]:
     return {
         "meta": {"generated_at": "2026-04-14T08:00:00+08:00"},
@@ -116,6 +129,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--json", action="store_true", help="Output JSON instead of text")
     parser.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")
+    parser.add_argument("--html", action="store_true", help="Output HTML instead of text")
     return parser.parse_args()
 
 
@@ -128,6 +142,8 @@ def main() -> None:
         print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
     elif args.markdown:
         print(build_markdown_report(report))
+    elif args.html:
+        print(build_html_report(report))
     else:
         print(build_report(report))
 

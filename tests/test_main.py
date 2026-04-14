@@ -1,4 +1,10 @@
-from src.main import MorningReport, build_markdown_report, build_report, example_payload
+from src.main import (
+    MorningReport,
+    build_html_report,
+    build_markdown_report,
+    build_report,
+    example_payload,
+)
 
 
 def test_build_report_contains_sections():
@@ -26,6 +32,14 @@ def test_markdown_mode_uses_headings():
     assert text.startswith("# Morning Intelligence Butler")
     assert "## Important mail" in text
     assert "## Follow-ups" in text
+
+
+def test_html_mode_uses_document_shell():
+    report = MorningReport.from_dict(example_payload())
+    text = build_html_report(report)
+    assert text.startswith("<!doctype html>")
+    assert "Morning Intelligence Butler" in text
+    assert "<section><h2>Follow-ups</h2>" in text
 
 
 def test_build_report_handles_empty_sections():
