@@ -82,6 +82,15 @@ def test_main_returns_consistent_exit_codes_for_success_and_bad_input(tmp_path, 
     assert "Input file not found" in captured.err
 
 
+def test_main_requires_market_fields(tmp_path, capsys):
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps({"news": [], "mail": {}}), encoding="utf-8")
+
+    assert main(["--input", str(bad)]) == 2
+    captured = capsys.readouterr()
+    assert "Missing required market field" in captured.err
+
+
 def test_load_input_data_reports_invalid_json(tmp_path):
     bad = tmp_path / "bad.json"
     bad.write_text("not json", encoding="utf-8")

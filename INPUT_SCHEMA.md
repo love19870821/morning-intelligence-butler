@@ -52,11 +52,12 @@ The repository includes `sample_report.json` as a ready-to-run example.
 
 ### `market`
 
-- Optional object with market snapshot strings.
+- Required object with market snapshot strings.
 - Supported keys:
   - `gold`: international gold price
   - `oil`: oil price
   - `usd_twd`: USD/TWD exchange rate
+- All three values must be present and non-empty.
 - Each value is rendered as a line in the market snapshot section.
 
 ### `follow_ups`

@@ -35,9 +35,9 @@ class MorningReport:
             important_mail=list(mail.get("important", []) or []),
             news_highlights=list(data.get("news", []) or []),
             market_snapshot=[
-                f"Gold (international): {market.get('gold', 'Not provided')}",
-                f"Oil: {market.get('oil', 'Not provided')}",
-                f"USD/TWD: {market.get('usd_twd', 'Not provided')}",
+                f"Gold (international): {require_market_value(market, 'gold', 'international gold price')}",
+                f"Oil: {require_market_value(market, 'oil', 'oil price')}",
+                f"USD/TWD: {require_market_value(market, 'usd_twd', 'USD/TWD exchange rate')}",
             ],
             cleanup_actions=list(mail.get("cleanup", []) or []),
             follow_ups=list(data.get("follow_ups", []) or []),
@@ -80,6 +80,13 @@ def load_input_data(input_path: Path | None) -> dict[str, Any]:
         raise ValueError(f"Input file not found: {input_path}") from exc
     except json.JSONDecodeError as exc:
         raise ValueError(f"Invalid JSON in input file {input_path}: {exc.msg}") from exc
+
+
+def require_market_value(market: dict[str, Any], key: str, label: str) -> str:
+    value = market.get(key)
+    if value is None or str(value).strip() == "":
+        raise ValueError(f"Missing required market field: market.{key} ({label})")
+    return str(value)
 
 
 def write_output(path: Path, output: str) -> None:

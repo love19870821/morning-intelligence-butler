@@ -153,6 +153,8 @@ The bundle includes sample input plus rendered text, Markdown, HTML, and JSON ou
 
 Feed the tool your own report JSON:
 
+The input must include `market.gold`, `market.oil`, and `market.usd_twd` with real values.
+
 ```bash
 morning-butler --input your_report.json
 morning-butler --format json --input your_report.json --output report.json
