@@ -115,6 +115,16 @@ morning-butler-smoke
 python scripts/smoke_test.py
 ```
 
+## Release check
+
+Before cutting a release, run the local release verification flow:
+
+```bash
+morning-butler-release-check
+```
+
+This runs pytest, the smoke test, builds a wheel, installs that wheel into a fresh virtual environment, and runs the installed smoke test again.
+
 ## Demo bundle
 
 Create a full sample bundle:

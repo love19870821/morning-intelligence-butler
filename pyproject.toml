@@ -24,6 +24,7 @@ classifiers = [
 [project.scripts]
 morning-butler = "src.main:main"
 morning-butler-smoke = "scripts.smoke_test:main"
+morning-butler-release-check = "scripts.release_check:main"
 
 [project.urls]
 Homepage = "https://github.com/love19870821/morning-intelligence-butler"
