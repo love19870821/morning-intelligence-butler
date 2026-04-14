@@ -15,6 +15,11 @@ The repository includes `sample_report.json` as a ready-to-run example.
     "Taiwan market opens higher",
     "AI tooling continues to accelerate"
   ],
+  "market": {
+    "gold": "USD 2,350/oz",
+    "oil": "Brent USD 84.20/bbl",
+    "usd_twd": "32.12"
+  },
   "follow_ups": [
     "Reply to the supplier before 11:00",
     "Check the 10:30 calendar invite"
@@ -44,6 +49,15 @@ The repository includes `sample_report.json` as a ready-to-run example.
 
 - Optional array of strings.
 - Each item becomes one news highlight.
+
+### `market`
+
+- Optional object with market snapshot strings.
+- Supported keys:
+  - `gold`: international gold price
+  - `oil`: oil price
+  - `usd_twd`: USD/TWD exchange rate
+- Each value is rendered as a line in the market snapshot section.
 
 ### `follow_ups`
 

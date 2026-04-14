@@ -21,6 +21,7 @@ from src import __version__
 class MorningReport:
     important_mail: list[str] = field(default_factory=list)
     news_highlights: list[str] = field(default_factory=list)
+    market_snapshot: list[str] = field(default_factory=list)
     cleanup_actions: list[str] = field(default_factory=list)
     follow_ups: list[str] = field(default_factory=list)
     generated_at: str | None = None
@@ -29,9 +30,15 @@ class MorningReport:
     def from_dict(cls, data: dict[str, Any]) -> "MorningReport":
         mail = data.get("mail", {}) or {}
         meta = data.get("meta", {}) or {}
+        market = data.get("market", {}) or {}
         return cls(
             important_mail=list(mail.get("important", []) or []),
             news_highlights=list(data.get("news", []) or []),
+            market_snapshot=[
+                f"Gold (international): {market.get('gold', 'Not provided')}",
+                f"Oil: {market.get('oil', 'Not provided')}",
+                f"USD/TWD: {market.get('usd_twd', 'Not provided')}",
+            ],
             cleanup_actions=list(mail.get("cleanup", []) or []),
             follow_ups=list(data.get("follow_ups", []) or []),
             generated_at=meta.get("generated_at"),
@@ -41,6 +48,7 @@ class MorningReport:
         return {
             "important_mail": len(self.important_mail),
             "news_highlights": len(self.news_highlights),
+            "market_snapshot": len(self.market_snapshot),
             "cleanup_actions": len(self.cleanup_actions),
             "follow_ups": len(self.follow_ups),
         }
@@ -51,6 +59,7 @@ class MorningReport:
             "summary": self.counts(),
             "important_mail": self.important_mail,
             "news_highlights": self.news_highlights,
+            "market_snapshot": self.market_snapshot,
             "cleanup_actions": self.cleanup_actions,
             "follow_ups": self.follow_ups,
         }
@@ -107,6 +116,7 @@ def format_summary_line(report: MorningReport) -> str:
     return (
         f"Summary: {counts['important_mail']} important mail, "
         f"{counts['news_highlights']} news items, "
+        f"{counts['market_snapshot']} market items, "
         f"{counts['cleanup_actions']} cleanup actions, "
         f"{counts['follow_ups']} follow-ups"
     )
@@ -117,6 +127,7 @@ def format_markdown_summary(report: MorningReport) -> str:
     return (
         f"**Summary:** {counts['important_mail']} important mail, "
         f"{counts['news_highlights']} news items, "
+        f"{counts['market_snapshot']} market items, "
         f"{counts['cleanup_actions']} cleanup actions, "
         f"{counts['follow_ups']} follow-ups"
     )
@@ -128,6 +139,7 @@ def format_html_summary(report: MorningReport) -> str:
         "<p class=\"summary\">"
         f"{counts['important_mail']} important mail · "
         f"{counts['news_highlights']} news items · "
+        f"{counts['market_snapshot']} market items · "
         f"{counts['cleanup_actions']} cleanup actions · "
         f"{counts['follow_ups']} follow-ups"
         "</p>"
@@ -142,6 +154,8 @@ def build_report(report: MorningReport) -> str:
     lines.append("")
     lines.extend(format_section("News highlights", report.news_highlights))
     lines.append("")
+    lines.extend(format_section("Market snapshot", report.market_snapshot))
+    lines.append("")
     lines.extend(format_section("Cleanup actions", report.cleanup_actions))
     lines.append("")
     lines.extend(format_section("Follow-ups", report.follow_ups))
@@ -155,6 +169,8 @@ def build_markdown_report(report: MorningReport) -> str:
     lines.append("")
     lines.extend(format_markdown_section("News highlights", report.news_highlights))
     lines.append("")
+    lines.extend(format_markdown_section("Market snapshot", report.market_snapshot))
+    lines.append("")
     lines.extend(format_markdown_section("Cleanup actions", report.cleanup_actions))
     lines.append("")
     lines.extend(format_markdown_section("Follow-ups", report.follow_ups))
@@ -164,13 +180,18 @@ def build_markdown_report(report: MorningReport) -> str:
 def build_html_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
     return f"""<!doctype html>
-<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}.summary{{font-weight:600;margin-top:8px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  {format_html_summary(report)}\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
+<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}.summary{{font-weight:600;margin-top:8px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  {format_html_summary(report)}\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Market snapshot</h2><ul>{format_html_list(report.market_snapshot)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
 
 
 def example_payload() -> dict[str, Any]:
     return {
         "meta": {"generated_at": "2026-04-14T08:00:00+08:00"},
         "news": ["Taiwan market opens higher", "AI tooling continues to accelerate"],
+        "market": {
+            "gold": "USD 2,350/oz",
+            "oil": "Brent USD 84.20/bbl",
+            "usd_twd": "32.12",
+        },
         "follow_ups": ["Reply to the supplier before 11:00", "Check the 10:30 calendar invite"],
         "mail": {
             "important": [

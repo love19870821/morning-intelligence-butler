@@ -27,6 +27,7 @@ def test_build_report_contains_sections():
     text = build_report(report)
     assert "Important mail" in text
     assert "News highlights" in text
+    assert "Market snapshot" in text
     assert "Cleanup actions" in text
     assert "Follow-ups" in text
     assert "Generated:" in text
@@ -53,6 +54,7 @@ def test_json_mode_returns_normalized_payload():
     payload = report.to_dict()
     assert payload["important_mail"]
     assert payload["news_highlights"]
+    assert payload["market_snapshot"]
     assert payload["cleanup_actions"]
     assert payload["follow_ups"]
     assert payload["summary"]["important_mail"] == len(payload["important_mail"])
@@ -123,6 +125,7 @@ def test_markdown_mode_uses_headings():
     text = build_markdown_report(report)
     assert text.startswith("# Morning Intelligence Butler")
     assert "## Important mail" in text
+    assert "## Market snapshot" in text
     assert "## Follow-ups" in text
     assert "**Summary:**" in text
 
@@ -132,6 +135,7 @@ def test_html_mode_uses_document_shell():
     text = build_html_report(report)
     assert text.startswith("<!doctype html>")
     assert "Morning Intelligence Butler" in text
+    assert "<section><h2>Market snapshot</h2>" in text
     assert "<section><h2>Follow-ups</h2>" in text
     assert "\n+<html" not in text
     assert 'class="summary"' in text

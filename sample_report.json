@@ -6,6 +6,11 @@
     "Taiwan market opens higher",
     "AI tooling continues to accelerate"
   ],
+  "market": {
+    "gold": "USD 2,350/oz",
+    "oil": "Brent USD 84.20/bbl",
+    "usd_twd": "32.12"
+  },
   "follow_ups": [
     "Reply to the supplier before 11:00",
     "Check the 10:30 calendar invite"

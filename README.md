@@ -58,7 +58,7 @@ Text mode:
 ```text
 Morning Intelligence Butler
 Generated: 2026-04-14T08:00:00+08:00
-Summary: 2 important mail, 2 news items, 2 cleanup actions, 2 follow-ups
+Summary: 2 important mail, 2 news items, 3 market items, 2 cleanup actions, 2 follow-ups
 =
 
 Important mail
@@ -67,6 +67,11 @@ Important mail
 News highlights
 - Taiwan headline example
 - AI news example
+
+Market snapshot
+- Gold (international): USD 2,350/oz
+- Oil: Brent USD 84.20/bbl
+- USD/TWD: 32.12
 
 Cleanup actions
 - Moved 24 promotional emails to trash
@@ -82,7 +87,7 @@ Markdown mode:
 ```md
 # Morning Intelligence Butler
 Generated: 2026-04-14T08:00:00+08:00
-**Summary:** 2 important mail, 2 news items, 2 cleanup actions, 2 follow-ups
+**Summary:** 2 important mail, 2 news items, 3 market items, 2 cleanup actions, 2 follow-ups
 
 ## Important mail
 - Reply to client about proposal
@@ -90,6 +95,11 @@ Generated: 2026-04-14T08:00:00+08:00
 ## News highlights
 - Taiwan headline example
 - AI news example
+
+## Market snapshot
+- Gold (international): USD 2,350/oz
+- Oil: Brent USD 84.20/bbl
+- USD/TWD: 32.12
 ```
 
 HTML mode:
@@ -100,7 +110,8 @@ HTML mode:
   <head>...</head>
   <body>
     <h1>Morning Intelligence Butler</h1>
-    <p class="summary">2 important mail · 2 news items · 2 cleanup actions · 2 follow-ups</p>
+    <p class="summary">2 important mail · 2 news items · 3 market items · 2 cleanup actions · 2 follow-ups</p>
+    <section><h2>Market snapshot</h2><ul>...</ul></section>
   </body>
 </html>
 ```
