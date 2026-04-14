@@ -102,6 +102,13 @@ python src/main.py --write-sample
 python src/main.py --write-sample my_sample.json
 ```
 
+Generate a full demo bundle:
+
+```bash
+python src/main.py --generate-demo
+python src/main.py --generate-demo demo-kit
+```
+
 ## Quick start
 
 ```bash

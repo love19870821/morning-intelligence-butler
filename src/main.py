@@ -154,6 +154,13 @@ def parse_args() -> argparse.Namespace:
         help="Write a starter sample JSON file and exit",
     )
     parser.add_argument(
+        "--generate-demo",
+        nargs="?",
+        const=Path("demo-output"),
+        type=Path,
+        help="Generate a full demo bundle (sample input + rendered outputs) and exit",
+    )
+    parser.add_argument(
         "--format",
         choices=("text", "json", "markdown", "html"),
         help="Explicitly choose the output format",
@@ -192,8 +199,22 @@ def write_sample_input(path: Path) -> None:
     write_output(path, json.dumps(example_payload(), ensure_ascii=False, indent=2))
 
 
+def generate_demo_bundle(directory: Path) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    write_sample_input(directory / "sample_report.json")
+    report = MorningReport.from_dict(example_payload())
+    write_output(directory / "report.txt", build_report(report))
+    write_output(directory / "report.md", build_markdown_report(report))
+    write_output(directory / "report.html", build_html_report(report))
+    write_output(directory / "report.json", render_report(report, "json"))
+
+
 def main() -> None:
     args = parse_args()
+
+    if args.generate_demo:
+        generate_demo_bundle(args.generate_demo)
+        return
 
     if args.write_sample:
         write_sample_input(args.write_sample)

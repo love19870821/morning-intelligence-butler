@@ -11,6 +11,7 @@ from src.main import (
     build_markdown_report,
     build_report,
     example_payload,
+    generate_demo_bundle,
     load_input_data,
     select_format,
     write_output,
@@ -69,6 +70,16 @@ def test_write_sample_input_creates_starter_json(tmp_path):
     data = json.loads(target.read_text(encoding="utf-8"))
     assert data["mail"]["important"]
     assert data["follow_ups"]
+
+
+def test_generate_demo_bundle_creates_all_demo_files(tmp_path):
+    target = tmp_path / "demo"
+    generate_demo_bundle(target)
+    assert (target / "sample_report.json").exists()
+    assert (target / "report.txt").exists()
+    assert (target / "report.md").exists()
+    assert (target / "report.html").exists()
+    assert (target / "report.json").exists()
 
 
 def test_stdin_input_can_be_used_via_hyphen(tmp_path, monkeypatch):
