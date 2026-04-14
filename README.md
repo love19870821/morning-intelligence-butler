@@ -120,6 +120,14 @@ python src/main.py --format markdown
 python src/main.py --format html
 ```
 
+## First-run smoke test
+
+After installing, verify the full flow:
+
+```bash
+python scripts/smoke_test.py
+```
+
 Or install it locally:
 
 ```bash
