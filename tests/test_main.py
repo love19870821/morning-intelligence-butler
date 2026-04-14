@@ -22,9 +22,9 @@ from src.main import (
 )
 
 MARKET_SNAPSHOT = [
-    "Gold (international): USD 4,796.65/oz",
-    "Oil (Brent): USD 97.79/bbl",
-    "USD/TWD: 31.623",
+    "國際黃金：USD 4,796.65/oz",
+    "布蘭特原油：USD 97.79/bbl",
+    "美元／台幣：31.623",
 ]
 
 
@@ -36,13 +36,14 @@ def test_build_report_contains_sections(monkeypatch):
     mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     text = build_report(report)
-    assert "Important mail" in text
-    assert "News highlights" in text
-    assert "Market snapshot" in text
-    assert "Cleanup actions" in text
-    assert "Follow-ups" in text
-    assert "Generated:" in text
-    assert "Summary:" in text
+    assert "晨報" in text
+    assert "重要信件" in text
+    assert "新聞重點" in text
+    assert "市場行情" in text
+    assert "清理動作" in text
+    assert "靈感與待解鎖事項" in text
+    assert "產生時間：" in text
+    assert "摘要：" in text
 
 
 def test_select_format_prefers_one_mode():
@@ -102,8 +103,8 @@ def test_main_fetches_live_market_snapshot_without_input_market(tmp_path, capsys
 
     assert main(["--input", str(input_file)]) == 0
     captured = capsys.readouterr()
-    assert "Market snapshot" in captured.out
-    assert "Gold (international): USD 4,796.65/oz" in captured.out
+    assert "市場行情" in captured.out
+    assert "國際黃金：USD 4,796.65/oz" in captured.out
 
 
 def test_load_input_data_reports_invalid_json(tmp_path):
@@ -126,6 +127,7 @@ def test_write_sample_input_creates_starter_json(tmp_path):
     assert data["mail"]["important"]
     assert data["follow_ups"]
     assert "market" not in data
+    assert data["news"][0].startswith("台灣")
 
 
 def test_generate_demo_bundle_creates_all_demo_files(tmp_path, monkeypatch):
@@ -150,11 +152,11 @@ def test_markdown_mode_uses_headings(monkeypatch):
     mock_market_snapshot(monkeypatch)
     report = MorningReport.from_dict(example_payload())
     text = build_markdown_report(report)
-    assert text.startswith("# Morning Intelligence Butler")
-    assert "## Important mail" in text
-    assert "## Market snapshot" in text
-    assert "## Follow-ups" in text
-    assert "**Summary:**" in text
+    assert text.startswith("# 晨報")
+    assert "## 重要信件" in text
+    assert "## 市場行情" in text
+    assert "## 靈感與待解鎖事項" in text
+    assert "**摘要：**" in text
 
 
 def test_html_mode_uses_document_shell(monkeypatch):
@@ -162,9 +164,9 @@ def test_html_mode_uses_document_shell(monkeypatch):
     report = MorningReport.from_dict(example_payload())
     text = build_html_report(report)
     assert text.startswith("<!doctype html>")
-    assert "Morning Intelligence Butler" in text
-    assert "<section><h2>Market snapshot</h2>" in text
-    assert "<section><h2>Follow-ups</h2>" in text
+    assert "晨報" in text
+    assert "<section><h2>市場行情</h2>" in text
+    assert "<section><h2>靈感與待解鎖事項</h2>" in text
     assert "\n+<html" not in text
     assert 'class="summary"' in text
 

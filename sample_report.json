@@ -3,21 +3,21 @@
     "generated_at": "2026-04-14T08:00:00+08:00"
   },
   "news": [
-    "Taiwan market opens higher",
-    "AI tooling continues to accelerate"
+    "台灣市場開盤走高",
+    "AI 工具持續加速"
   ],
   "follow_ups": [
-    "Reply to the supplier before 11:00",
-    "Check the 10:30 calendar invite"
+    "在 11:00 前回覆供應商",
+    "確認 10:30 的行事曆邀請"
   ],
   "mail": {
     "important": [
-      "Reply to supplier about invoice",
-      "Check calendar invite for 10:30 meeting"
+      "回覆供應商發票事宜",
+      "確認 10:30 會議的行事曆邀請"
     ],
     "cleanup": [
-      "Moved 24 promotional emails to trash",
-      "Skipped 3 starred messages and 2 emails with attachments"
+      "已將 24 封促銷信移到垃圾桶",
+      "略過 3 封已加星號郵件與 2 封含附件郵件"
     ]
   }
 }

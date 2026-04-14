@@ -161,14 +161,14 @@ def fetch_market_snapshot() -> list[str]:
     fixture = load_market_fixture()
     if fixture is not None:
         return [
-            f"Gold (international): {fixture['gold']}",
-            f"Oil (Brent): {fixture['oil']}",
-            f"USD/TWD: {fixture['usd_twd']}",
+            f"國際黃金：{fixture['gold']}",
+            f"布蘭特原油：{fixture['oil']}",
+            f"美元／台幣：{fixture['usd_twd']}",
         ]
     return [
-        f"Gold (international): {fetch_market_value('international gold price', 'https://www.investing.com/commodities/gold', 'GC=F', 2, prefix='USD ', suffix='/oz')}",
-        f"Oil (Brent): {fetch_market_value('Brent oil price', 'https://www.investing.com/commodities/brent-oil', 'BZ=F', 2, prefix='USD ', suffix='/bbl')}",
-        f"USD/TWD: {fetch_market_value('USD/TWD exchange rate', 'https://www.investing.com/currencies/usd-twd', 'USDTWD=X', 3)}",
+        f"國際黃金：{fetch_market_value('international gold price', 'https://www.investing.com/commodities/gold', 'GC=F', 2, prefix='USD ', suffix='/oz')}",
+        f"布蘭特原油：{fetch_market_value('Brent oil price', 'https://www.investing.com/commodities/brent-oil', 'BZ=F', 2, prefix='USD ', suffix='/bbl')}",
+        f"美元／台幣：{fetch_market_value('USD/TWD exchange rate', 'https://www.investing.com/currencies/usd-twd', 'USDTWD=X', 3)}",
     ]
 
 
@@ -199,22 +199,22 @@ def format_html_list(items: list[str]) -> str:
 def format_summary_line(report: MorningReport) -> str:
     counts = report.counts()
     return (
-        f"Summary: {counts['important_mail']} important mail, "
-        f"{counts['news_highlights']} news items, "
-        f"{counts['market_snapshot']} market items, "
-        f"{counts['cleanup_actions']} cleanup actions, "
-        f"{counts['follow_ups']} follow-ups"
+        f"摘要：{counts['important_mail']} 封重要信件、"
+        f"{counts['news_highlights']} 則新聞、"
+        f"{counts['market_snapshot']} 筆市場行情、"
+        f"{counts['cleanup_actions']} 項清理動作、"
+        f"{counts['follow_ups']} 項靈感與待解鎖事項"
     )
 
 
 def format_markdown_summary(report: MorningReport) -> str:
     counts = report.counts()
     return (
-        f"**Summary:** {counts['important_mail']} important mail, "
-        f"{counts['news_highlights']} news items, "
-        f"{counts['market_snapshot']} market items, "
-        f"{counts['cleanup_actions']} cleanup actions, "
-        f"{counts['follow_ups']} follow-ups"
+        f"**摘要：**{counts['important_mail']} 封重要信件、"
+        f"{counts['news_highlights']} 則新聞、"
+        f"{counts['market_snapshot']} 筆市場行情、"
+        f"{counts['cleanup_actions']} 項清理動作、"
+        f"{counts['follow_ups']} 項靈感與待解鎖事項"
     )
 
 
@@ -222,65 +222,65 @@ def format_html_summary(report: MorningReport) -> str:
     counts = report.counts()
     return (
         "<p class=\"summary\">"
-        f"{counts['important_mail']} important mail · "
-        f"{counts['news_highlights']} news items · "
-        f"{counts['market_snapshot']} market items · "
-        f"{counts['cleanup_actions']} cleanup actions · "
-        f"{counts['follow_ups']} follow-ups"
+        f"{counts['important_mail']} 封重要信件 · "
+        f"{counts['news_highlights']} 則新聞 · "
+        f"{counts['market_snapshot']} 筆市場行情 · "
+        f"{counts['cleanup_actions']} 項清理動作 · "
+        f"{counts['follow_ups']} 項靈感與待解鎖事項"
         "</p>"
     )
 
 
 def build_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
-    lines = ["Morning Intelligence Butler", f"Generated: {generated}", format_summary_line(report), "="]
+    lines = ["晨報", f"產生時間：{generated}", format_summary_line(report), "="]
     lines.append("")
-    lines.extend(format_section("Important mail", report.important_mail))
+    lines.extend(format_section("重要信件", report.important_mail))
     lines.append("")
-    lines.extend(format_section("News highlights", report.news_highlights))
+    lines.extend(format_section("新聞重點", report.news_highlights))
     lines.append("")
-    lines.extend(format_section("Market snapshot", report.market_snapshot))
+    lines.extend(format_section("市場行情", report.market_snapshot))
     lines.append("")
-    lines.extend(format_section("Cleanup actions", report.cleanup_actions))
+    lines.extend(format_section("清理動作", report.cleanup_actions))
     lines.append("")
-    lines.extend(format_section("Follow-ups", report.follow_ups))
+    lines.extend(format_section("靈感與待解鎖事項", report.follow_ups))
     return "\n".join(lines)
 
 
 def build_markdown_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
-    lines = ["# Morning Intelligence Butler", f"Generated: {generated}", format_markdown_summary(report), ""]
-    lines.extend(format_markdown_section("Important mail", report.important_mail))
+    lines = ["# 晨報", f"產生時間：{generated}", format_markdown_summary(report), ""]
+    lines.extend(format_markdown_section("重要信件", report.important_mail))
     lines.append("")
-    lines.extend(format_markdown_section("News highlights", report.news_highlights))
+    lines.extend(format_markdown_section("新聞重點", report.news_highlights))
     lines.append("")
-    lines.extend(format_markdown_section("Market snapshot", report.market_snapshot))
+    lines.extend(format_markdown_section("市場行情", report.market_snapshot))
     lines.append("")
-    lines.extend(format_markdown_section("Cleanup actions", report.cleanup_actions))
+    lines.extend(format_markdown_section("清理動作", report.cleanup_actions))
     lines.append("")
-    lines.extend(format_markdown_section("Follow-ups", report.follow_ups))
+    lines.extend(format_markdown_section("靈感與待解鎖事項", report.follow_ups))
     return "\n".join(lines)
 
 
 def build_html_report(report: MorningReport) -> str:
     generated = report.generated_at or datetime.now(timezone.utc).astimezone().isoformat(timespec="minutes")
     return f"""<!doctype html>
-<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Morning Intelligence Butler</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}.summary{{font-weight:600;margin-top:8px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>Morning Intelligence Butler</h1>\n  <div class=\"meta\">Generated: {html.escape(generated)}</div>\n  {format_html_summary(report)}\n  <section><h2>Important mail</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>News highlights</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>Market snapshot</h2><ul>{format_html_list(report.market_snapshot)}</ul></section>\n  <section><h2>Cleanup actions</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>Follow-ups</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
+<html lang=\"zh-Hant\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>晨報</title>\n  <style>body{{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}}h1{{margin-bottom:0}}.meta{{color:#666;margin-top:4px}}.summary{{font-weight:600;margin-top:8px}}section{{margin-top:24px}}ul{{padding-left:20px}}</style>\n</head>\n<body>\n  <h1>晨報</h1>\n  <div class=\"meta\">產生時間：{html.escape(generated)}</div>\n  {format_html_summary(report)}\n  <section><h2>重要信件</h2><ul>{format_html_list(report.important_mail)}</ul></section>\n  <section><h2>新聞重點</h2><ul>{format_html_list(report.news_highlights)}</ul></section>\n  <section><h2>市場行情</h2><ul>{format_html_list(report.market_snapshot)}</ul></section>\n  <section><h2>清理動作</h2><ul>{format_html_list(report.cleanup_actions)}</ul></section>\n  <section><h2>靈感與待解鎖事項</h2><ul>{format_html_list(report.follow_ups)}</ul></section>\n</body>\n</html>"""
 
 
 def example_payload() -> dict[str, Any]:
     return {
         "meta": {"generated_at": "2026-04-14T08:00:00+08:00"},
-        "news": ["Taiwan market opens higher", "AI tooling continues to accelerate"],
-        "follow_ups": ["Reply to the supplier before 11:00", "Check the 10:30 calendar invite"],
+        "news": ["台灣市場開盤走高", "AI 工具持續加速"],
+        "follow_ups": ["在 11:00 前回覆供應商", "確認 10:30 的行事曆邀請"],
         "mail": {
             "important": [
-                "Reply to supplier about invoice",
-                "Check calendar invite for 10:30 meeting",
+                "回覆供應商發票事宜",
+                "確認 10:30 會議的行事曆邀請",
             ],
             "cleanup": [
-                "Moved 24 promotional emails to trash",
-                "Skipped 3 starred messages and 2 emails with attachments",
+                "已將 24 封促銷信移到垃圾桶",
+                "略過 3 封已加星號郵件與 2 封含附件郵件",
             ],
         },
     }

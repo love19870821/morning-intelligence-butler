@@ -75,8 +75,8 @@ def main() -> int:
         run(cli_cmd + ["--format", "html", "--input", str(sample), "--output", str(html_out)], cwd=repo_root, env=env)
         run(cli_cmd + ["--format", "json", "--input", str(sample), "--output", str(json_out)], cwd=repo_root, env=env)
 
-        assert_file(text_out, "Morning Intelligence Butler")
-        assert_file(md_out, "# Morning Intelligence Butler")
+        assert_file(text_out, "晨報")
+        assert_file(md_out, "# 晨報")
         assert_file(html_out, "<!doctype html>")
         json.loads(json_out.read_text(encoding="utf-8"))
 

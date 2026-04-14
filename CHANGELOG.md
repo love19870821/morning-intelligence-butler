@@ -19,4 +19,4 @@ This release focuses on the first stable public workflow:
 ## [Unreleased]
 
 - Ongoing release-readiness improvements
-- Live market snapshot fetching for gold, Brent oil, and USD/TWD
+- 晨報輸出全面改為繁體中文，並保留即時市場行情抓取

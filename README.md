@@ -56,50 +56,60 @@ Each morning it can help you:
 Text mode:
 
 ```text
-Morning Intelligence Butler
-Generated: 2026-04-14T08:00:00+08:00
-Summary: 2 important mail, 2 news items, 3 market items, 2 cleanup actions, 2 follow-ups
+晨報
+產生時間：2026-04-14T08:00:00+08:00
+摘要：2 封重要信件、2 則新聞、3 筆市場行情、2 項清理動作、2 項靈感與待解鎖事項
 =
 
-Important mail
-- Reply to client about proposal
+重要信件
+- 回覆供應商發票事宜
+- 確認 10:30 會議的行事曆邀請
 
-News highlights
-- Taiwan headline example
-- AI news example
+新聞重點
+- 台灣市場開盤走高
+- AI 工具持續加速
 
-Market snapshot
-- Gold (international): live price
-- Oil (Brent): live price
-- USD/TWD: live rate
+市場行情
+- 國際黃金：即時價格
+- 布蘭特原油：即時價格
+- 美元／台幣：即時匯率
 
-Cleanup actions
-- Moved 24 promotional emails to trash
-- Skipped 3 starred messages and 2 emails with attachments
+清理動作
+- 已將 24 封促銷信移到垃圾桶
+- 略過 3 封已加星號郵件與 2 封含附件郵件
 
-Follow-ups
-- Reply to the supplier before 11:00
-- Check the 10:30 calendar invite
+靈感與待解鎖事項
+- 在 11:00 前回覆供應商
+- 確認 10:30 的行事曆邀請
 ```
 
 Markdown mode:
 
 ```md
-# Morning Intelligence Butler
-Generated: 2026-04-14T08:00:00+08:00
-**Summary:** 2 important mail, 2 news items, 3 market items, 2 cleanup actions, 2 follow-ups
+# 晨報
+產生時間：2026-04-14T08:00:00+08:00
+**摘要：**2 封重要信件、2 則新聞、3 筆市場行情、2 項清理動作、2 項靈感與待解鎖事項
 
-## Important mail
-- Reply to client about proposal
+## 重要信件
+- 回覆供應商發票事宜
+- 確認 10:30 會議的行事曆邀請
 
-## News highlights
-- Taiwan headline example
-- AI news example
+## 新聞重點
+- 台灣市場開盤走高
+- AI 工具持續加速
 
-## Market snapshot
-- Gold (international): USD 2,350/oz
-- Oil: Brent USD 84.20/bbl
-- USD/TWD: 32.12
+## 市場行情
+- 國際黃金：USD 2,350/oz
+- 布蘭特原油：USD 84.20/bbl
+- 美元／台幣：32.12
+
+## 清理動作
+- 已將 24 封促銷信移到垃圾桶
+- 略過 3 封已加星號郵件與 2 封含附件郵件
+
+## 靈感與待解鎖事項
+- 在 11:00 前回覆供應商
+- 確認 10:30 的行事曆邀請
 ```
 
 HTML mode:
@@ -109,9 +119,9 @@ HTML mode:
 <html lang="zh-Hant">
   <head>...</head>
   <body>
-    <h1>Morning Intelligence Butler</h1>
-    <p class="summary">2 important mail · 2 news items · 3 market items · 2 cleanup actions · 2 follow-ups</p>
-    <section><h2>Market snapshot</h2><ul>...</ul></section>
+    <h1>晨報</h1>
+    <p class="summary">2 封重要信件 · 2 則新聞 · 3 筆市場行情 · 2 項清理動作 · 2 項靈感與待解鎖事項</p>
+    <section><h2>市場行情</h2><ul>...</ul></section>
   </body>
 </html>
 ```
@@ -149,10 +159,10 @@ morning-butler --generate-demo demo-kit
 
 The bundle includes sample input plus rendered text, Markdown, HTML, and JSON outputs.
 
-## Real use
+## 實際使用
 
-Feed the tool your own report JSON.
-The report now fetches live gold, Brent oil, and USD/TWD prices automatically.
+把你自己的晨報 JSON 丟進去即可。
+工具會自動抓取即時的國際黃金、布蘭特原油與美元／台幣。
 
 ```bash
 morning-butler --input your_report.json
