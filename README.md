@@ -125,6 +125,8 @@ morning-butler-release-check
 
 This runs pytest, the smoke test, builds a wheel, installs that wheel into a fresh virtual environment, and runs the installed smoke test again.
 
+See [RELEASE.md](RELEASE.md) for the full pre-publish checklist.
+
 ## Demo bundle
 
 Create a full sample bundle:
