@@ -116,8 +116,8 @@ python src/main.py --generate-demo demo-kit
 
 ```bash
 python src/main.py
-python src/main.py --version
-python src/main.py --input sample_report.json
+python -m morning_butler --version
+python -m morning_butler --input sample_report.json
 python src/main.py --format json
 python src/main.py --format markdown
 python src/main.py --format html

@@ -24,6 +24,11 @@ classifiers = [
 [project.scripts]
 morning-butler = "src.main:main"
 
+[project.urls]
+Homepage = "https://github.com/love19870821/morning-intelligence-butler"
+Repository = "https://github.com/love19870821/morning-intelligence-butler.git"
+Issues = "https://github.com/love19870821/morning-intelligence-butler/issues"
+
 [tool.setuptools]
 package-dir = {"" = "."}
-py-modules = ["src.main"]
+py-modules = ["src.main", "morning_butler"]
