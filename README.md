@@ -95,6 +95,13 @@ Read input from stdin:
 cat sample_report.json | python src/main.py --json --input -
 ```
 
+Create a starter sample file:
+
+```bash
+python src/main.py --write-sample
+python src/main.py --write-sample my_sample.json
+```
+
 ## Quick start
 
 ```bash

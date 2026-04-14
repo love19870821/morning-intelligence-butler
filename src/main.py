@@ -147,6 +147,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", type=Path, help="JSON file with news/mail data")
     parser.add_argument("--output", type=Path, help="Write the rendered report to a file")
     parser.add_argument(
+        "--write-sample",
+        nargs="?",
+        const=Path("sample_report.json"),
+        type=Path,
+        help="Write a starter sample JSON file and exit",
+    )
+    parser.add_argument(
         "--format",
         choices=("text", "json", "markdown", "html"),
         help="Explicitly choose the output format",
@@ -180,8 +187,17 @@ def render_report(report: MorningReport, output_format: str) -> str:
     return build_report(report)
 
 
+def write_sample_input(path: Path) -> None:
+    write_output(path, json.dumps(example_payload(), ensure_ascii=False, indent=2))
+
+
 def main() -> None:
     args = parse_args()
+
+    if args.write_sample:
+        write_sample_input(args.write_sample)
+        return
+
     try:
         data = load_input_data(args.input)
     except ValueError as exc:

@@ -14,6 +14,7 @@ from src.main import (
     load_input_data,
     select_format,
     write_output,
+    write_sample_input,
 )
 
 
@@ -60,6 +61,14 @@ def test_write_output_creates_parent_directories(tmp_path):
     target = tmp_path / "nested" / "report.md"
     write_output(target, "hello")
     assert target.read_text(encoding="utf-8") == "hello"
+
+
+def test_write_sample_input_creates_starter_json(tmp_path):
+    target = tmp_path / "starter" / "sample_report.json"
+    write_sample_input(target)
+    data = json.loads(target.read_text(encoding="utf-8"))
+    assert data["mail"]["important"]
+    assert data["follow_ups"]
 
 
 def test_stdin_input_can_be_used_via_hyphen(tmp_path, monkeypatch):
