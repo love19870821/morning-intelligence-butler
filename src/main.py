@@ -158,6 +158,7 @@ def parse_args() -> argparse.Namespace:
         choices=("text", "json", "markdown", "html"),
         help="Explicitly choose the output format",
     )
+    parser.add_argument("--version", action="version", version="morning-intelligence-butler 0.2.0")
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument("--json", action="store_true", help="Output JSON instead of text")
     format_group.add_argument("--markdown", action="store_true", help="Output Markdown instead of text")

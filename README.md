@@ -106,6 +106,7 @@ python src/main.py --write-sample my_sample.json
 
 ```bash
 python src/main.py
+python src/main.py --version
 python src/main.py --input sample_report.json
 python src/main.py --format json
 python src/main.py --format markdown
