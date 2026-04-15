@@ -21,3 +21,4 @@ This release focuses on the first stable public workflow:
 - Ongoing release-readiness improvements
 - README 與套件描述已同步更新，現在更清楚標示繁體中文晨報、Gmail 分流、即時行情與待跟進事項
 - 晨報輸出全面改為繁體中文，並保留即時市場行情抓取
+- 補上 `MORNING_BUTLER_MARKET_FIXTURE` 的文件，讓離線與可重現測試更好維護

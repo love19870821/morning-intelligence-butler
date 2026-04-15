@@ -48,6 +48,7 @@ Fix:
 - check that the machine has outbound network access
 - retry after a short delay
 - confirm that the upstream price sites are reachable
+- for offline runs or deterministic smoke tests, set `MORNING_BUTLER_MARKET_FIXTURE` with `gold`, `oil`, and `usd_twd`
 
 ## Output file is missing
 

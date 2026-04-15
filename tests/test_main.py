@@ -141,6 +141,25 @@ def test_generate_demo_bundle_creates_all_demo_files(tmp_path, monkeypatch):
     assert (target / "report.json").exists()
 
 
+def test_market_fixture_env_overrides_live_fetch(monkeypatch):
+    monkeypatch.setenv(
+        "MORNING_BUTLER_MARKET_FIXTURE",
+        json.dumps({"gold": "USD 2,350/oz", "oil": "USD 84.20/bbl", "usd_twd": "32.12"}),
+    )
+    report = MorningReport.from_dict(example_payload())
+    assert report.market_snapshot == [
+        "國際黃金：USD 2,350/oz",
+        "布蘭特原油：USD 84.20/bbl",
+        "美元／台幣：32.12",
+    ]
+
+
+def test_invalid_market_fixture_env_raises_value_error(monkeypatch):
+    monkeypatch.setenv("MORNING_BUTLER_MARKET_FIXTURE", "not-json")
+    with pytest.raises(ValueError, match="Invalid JSON in MORNING_BUTLER_MARKET_FIXTURE"):
+        MorningReport.from_dict(example_payload())
+
+
 def test_stdin_input_can_be_used_via_hyphen(tmp_path, monkeypatch):
     sample = example_payload()
     monkeypatch.setattr("sys.stdin", io.StringIO(json.dumps(sample)))

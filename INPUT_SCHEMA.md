@@ -50,6 +50,7 @@ This project accepts a simple JSON document describing the morning briefing.
 - Fetched automatically at runtime from live sources.
 - It is not part of the input JSON.
 - The tool retrieves international gold, Brent oil, and USD/TWD prices automatically.
+- For offline demos or reproducible tests, set `MORNING_BUTLER_MARKET_FIXTURE` to a JSON object with `gold`, `oil`, and `usd_twd` values.
 
 ### `follow_ups`
 

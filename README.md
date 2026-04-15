@@ -51,6 +51,17 @@ Each morning it can help you:
 - export text, JSON, Markdown, or HTML
 - save the result directly to a file
 
+## Deterministic market fixture
+
+For demos, tests, or offline runs, set `MORNING_BUTLER_MARKET_FIXTURE` to a JSON object with `gold`, `oil`, and `usd_twd` values.
+
+```bash
+export MORNING_BUTLER_MARKET_FIXTURE='{"gold":"USD 4,796.65/oz","oil":"USD 97.79/bbl","usd_twd":"31.623"}'
+morning-butler --input demo-kit/sample_report.json
+```
+
+This keeps the market section stable without touching the live fetch flow.
+
 ## Example output
 
 Text mode:
