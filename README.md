@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 
 Morning Intelligence Butler is a small open-source morning briefing assistant.
-It combines Traditional Chinese news summaries, AI updates, Gmail triage, live market prices, and GitHub progress into one concise report.
+It combines Traditional Chinese news summaries, Gmail triage, live market prices, and follow-up items into one concise report.
 
 ## Start here
 
